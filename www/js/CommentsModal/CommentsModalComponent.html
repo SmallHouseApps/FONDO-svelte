@@ -1,0 +1,83 @@
+<div id="CommentsModalComponent" style="overflow-y: auto; height: 90vh">
+    <div id="head-sticky" style="position: absolute; top: 15px; right: 15px; left: 15px">
+        {{#if comments.length > 0}}
+            <h4 class="white-text left" style="margin: 5px;">Комментарии</h4>
+        {{else}}
+            <h4 class="white-text left" style="margin: 5px;">Файлы</h4>
+        {{/if}}
+        <button id="close" class="btn-floating white waves-effect waves-light right" on:click="close()">
+            <i class="mdi mdi-close black-text"></i>
+        </button>
+    </div>
+    <div class="row">
+        {{#if comments.length > 0}}
+            {{#each comments as comment}}
+                <div class="col s12 comment">
+                    <div class="card-panel" style="position: relative">
+                        <label style="position: absolute; top: 5px; left: 10px;">{{comment.user.full_name}}</label>
+                        <span>{{{comment.comment ? comment.comment : 'Оставил пустой комментарий'}}}</span>
+                        <label style="position: absolute; bottom: 5px; right: 5px;">{{comment.created_at}}</label>
+                    </div>
+                </div>
+            {{/each}}
+        {{else}}
+            {{#each files as file}}
+                <div class="col s4 file center-align" style="transform: translate3d(100vw, 30px, 0); line-height: 35px; transition: transform 300ms" on:click="downloadFile(file.file_id)">
+                    <i class="mdi mdi-file-excel white-text" style="position: relative; font-size: 100px"></i>
+                    <span class="white-text" style="font-size: 26px; word-wrap: break-word;">{{file.file.original_name}}</span>
+                </div>
+            {{/each}}
+        {{/if}}
+    </div>
+    {{#if addComment}}
+    <div class="card-panel comment-add" style="position: fixed; bottom: 0; width: 100%; margin: 0;">
+            <div class="row">
+                <div class="input-field col s12">
+                    <i class="mdi mdi-pencil prefix"></i>
+                    <textarea id="new-comment" bind:value="newComment" class="materialize-textarea" autofocus></textarea>
+                    <label for="new-comment">Ваше сообщение</label>
+                </div>
+                <button class="btn-flat green-text" style="position:absolute; bottom: 5px; right: 5px" on:click="add('comment')">Готово</button>
+            </div>
+    </div>
+    {{elseif addFile}}
+    <div class="card-panel file-add" style="position: fixed; bottom: 0; width: 100%; margin: 0;">
+        <div class="row">
+            <form class="file-field input-field col s12" id="file-form">
+                <div class="btn">
+                  <span>Файл</span>
+                  <input type="file" name="file">
+                  <input class="hide" type="number" name="applic_id" bind:value="applicId">
+                </div>
+                <div class="file-path-wrapper">
+                  <input class="file-path validate" type="text">
+                </div>
+            </form>
+            <button class="btn-flat green-text" style="position:absolute; bottom: 5px; right: 5px" on:click="add('file')">Готово</button>
+        </div>
+    </div>
+    {{else}}
+    <div class="fixed-action-btn">
+        <button class="btn-floating btn-large green waves-effect waves-light" on:click="add()">
+            <i class="mdi mdi-plus"></i>
+        </button>
+    </div>
+    {{/if}}
+</div>
+
+<style>
+    .comment{
+        transform: translate3d(0, 100vh, 0); 
+        transition: transform 300ms
+    }
+
+    #head-sticky{
+        transform: translate3d(0, -200px, 0);
+        transition: transform 200ms;
+    }
+
+    .comment-add{
+        transform: translate3d(0, 100vh, 0);
+        transition: transform 200ms;
+    }
+</style>

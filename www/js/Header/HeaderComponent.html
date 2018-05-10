@@ -1,0 +1,110 @@
+<div id="HeaderComponent">
+        <nav class="nav-extended {{color}}">
+
+            <div class="nav-wrapper">
+                {{#if !search}}
+                <ul class="left">
+                    {{#if type == 'menu'}}
+                    <li>
+                        <a href="#menu" class="mdi mdi-menu"></a>
+                    </li>
+                    {{else}}
+                    <li>
+                        <a class="mdi mdi-close" on:click="close()"></a>
+                    </li>
+                    {{/if}}
+                </ul>
+                <a href="{{titleHref}}" class="brand-logo">{{title}}</a>
+
+                <ul class="right">
+                    {{#each actions as action}}
+                    <li>
+                        {{{action.html}}}
+                    </li>
+                    {{/each}}
+                </ul>
+                {{else}}
+                <form>
+                    <div class="input-field">
+                        <input style="color: white" id="search" bind:value="searchText" type="search" required autofocus>
+                        <label class="label-icon" for="search"><i class="mdi mdi-magnify material-icons"></i></label>
+                        <i class="mdi mdi-close material-icons teal-text text-lighten-3" on:click="set({ search: false, navCategory: true })"></i>
+                    </div>
+                </form>
+                {{/if}}
+            </div>
+            {{#if search}}
+            <div class="nav-content" style="background-color: white; padding: 11px;">
+                <i class="mdi mdi-help-circle left teal-text" on:click="help('search')" style="height: 24px; line-height: 24px;"></i>
+                <p class="white-text" style="margin: 0;">
+                    <label>
+                        <input type="checkbox" bind:checked="searchGlobal" />
+                        <span disabled>Глобальный поиск</span>
+                    </label>
+                    <button class="btn-flat teal-text waves-effect waves-teal" 
+                            style="position: absolute; top: 5px; right: 5px;" 
+                            onclick="window.ctrl.applicList.component.search(window.ctrl.header.get('searchText'), window.ctrl.header.get('searchGlobal'))">Искать</button>
+                </p>
+            </div>
+            {{/if}}
+            {{#if navCategory}}
+            <div class="nav-content">
+                <div class="category-tabs" #applicsCategoryTabs>
+                    <div class="category-tab all-applics {{currentCategory == 'all' ? 'active' : ''}}" on:click="chooseCategory('all')">
+                        <span>Все
+                            <b>{{applicsCount.all}}</b>
+                        </span>
+                    </div>
+                    <div class="category-tab done-applics {{currentCategory == 'done' ? 'active' : ''}}" on:click="chooseCategory('done')">
+                        <span>Завершенные
+                            <b>{{applicsCount.done}}</b>
+                        </span>
+                    </div>
+                    <div class="category-tab progress-applics {{currentCategory == 'progress' ? 'active' : ''}}" on:click="chooseCategory('progress')">
+                        <span>В обработке
+                            <b>{{applicsCount.progress}}</b>
+                        </span>
+                    </div>
+                    <div class="category-tab tk-applics {{currentCategory == 'takeouts' ? 'active' : ''}}" on:click="chooseCategory('takeouts')">
+                        <span>Заборы
+                            <b>{{applicsCount.tk}}</b>
+                        </span>
+                    </div>
+                    <div class="category-tab dl-applics {{currentCategory == 'deliverys' ? 'active' : ''}}" on:click="chooseCategory('deliverys')">
+                        <span>Доставки
+                            <b>{{applicsCount.dl}}</b>
+                        </span>
+                    </div>
+                    <div class="category-tab points-applics {{currentCategory == 'points' ? 'active' : ''}}" on:click="chooseCategory('points')">
+                        <span>Точки
+                            <b>{{applicsCount.points}}</b>
+                        </span>
+                    </div>
+                </div>
+            </div>
+            {{/if}}
+            {{#if loader}}
+            <div class="progress" style="margin: 0">
+                <div class="determinate" style="width: {{loader}}%"></div>
+            </div>
+            {{/if}}
+        </nav>
+
+        {{#if workShiftNotOpen}}
+        <div class="center-align" style="position: fixed; bottom: 15px; width: 100%; z-index: 999">
+            <button class="btn blue btn-large waves-effect waves-light" style="border-radius: 50px; font-size: 1.2em;" on:click="startWork()">
+                Открыть рабочую смену
+            </button>
+        </div>
+        {{/if}}
+</div>
+
+<style>
+    nav form {
+        height: 56px;
+    }
+
+    input:focus {
+        color: black !important;
+    }
+</style>

@@ -1,0 +1,37 @@
+<div id="AuthComponent">
+    <div class="teal-cover-block">
+        <div class="white-text" style="text-align: center; ">
+            <div style="height: 40vh; padding-top: 15%;">
+                <h3 style="text-align: center; margin-bottom: 10px;">Приветствуем!</h3>
+                <span style="font-size: 16px">Авторизация в систему FONDO</span>
+            </div>
+            <div class="row flex-block" style="height: 58vh; align-content: center;">
+                <div class="input-field col s12">
+                    <i class="mdi mdi-account prefix"></i>
+                    <input id="email" bind:value="email" type="text">
+                    <label for="email">Email</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="mdi mdi-lock prefix"></i>
+                    <input id="password" bind:value="password" type="password">
+                    <label for="password">Пароль</label>
+                </div>
+                <button class="btn-floating btn-large white waves-effect waves-teal" style="margin-top: 25px;" on:click="login()">
+                    <i class="mdi mdi-chevron-right black-text"></i>
+                </button>
+                <div style="position: absolute; bottom: 10px; left: 0; width: 100%;">
+                    <span>Забыли пароль?</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    export default {
+        oncreate() {
+            this.observe('email', email => { console.log('email: ', email); });
+            this.observe('password', password => { console.log('password: ', password); });
+        }
+    }
+</script>

@@ -1,0 +1,131 @@
+<div id="MenuComponent">
+<ul class="sidenav">
+    <li style="position: relative">
+        {{#if workShift.open}}
+        <div class="center-align aligner" style="position: absolute; top: 0; right: 10px; bottom: 0; z-index: 99999; width: 125px; color: white;">
+            <div>
+                <div class="row" style="line-height: 18px;">
+                    <span><i class="mdi mdi-ray-start"></i> Начало смены</span>
+                    {{#if workShift.speedometr_start}}
+                    <div class="info-block col s6">
+                        <label class="white-text">спидометр</label>
+                        <span>{{workShift.speedometr_start}}</span>
+                    </div>
+                    {{/if}}
+
+                    {{#if workShift.time_start}}
+                    <div class="info-block col s6">
+                        <label class="white-text">время</label>
+                        <span>{{workShift.time_start}}</span>
+                    </div>
+                    {{/if}}
+                </div>
+                <div class="divider"></div>
+                {{#if workTime}}
+                <div class="row" style="line-height: 18px;">
+                    
+                    <span>Время работы</span>
+                    <div class="info-block col s12">
+                        <span>{{workTime}}</span>
+                    </div>
+                   
+                </div>
+                {{/if}}
+                {{#if workShift.speedometr_end && workShift.time_end}}
+                <div class="row" style="line-height: 18px;">
+                    <span>Конец смены
+                        <i class="mdi mdi-ray-end"></i>
+                    </span>
+                    <div class="info-block col s6">
+                        <label class="white-text">спидометр</label>
+                        <span>{{workShift.speedometr_end}}</span>
+                    </div>
+                    <div class="info-block col s6">
+                        <label class="white-text">время</label>
+                        <span>{{workShift.time_end}}</span>
+                    </div>
+                </div>
+                <div class="divider"></div>
+                <div class="row" style="line-height: 18px;">
+                    <div class="info-block col s6">
+                        <label class="white-text">пройдено</label>
+                        <span>{{workShift.speedometr_end - workShift.speedometr_start}}км</span>
+                    </div>
+                    <div class="info-block col s6">
+                        <label class="white-text">работал</label>
+                        <span>{{workShift.time_end.split(':')[0] - workShift.time_start.split(':')[0]}}ч.{{workShift.time_end.split(':')[1] - workShift.time_start.split(':')[1]}}м.</span>
+                    </div>
+                </div>
+                {{/if}}
+                {{#if workTime}}
+                <div class="chip red accent-1 white-text z-depth-1" style="margin: 0"  on:click="endWork()">
+                    <i class="mdi mdi-close"></i>
+                    Закрыть смену
+                </div>
+                {{/if}}
+            </div>
+        </div>
+        
+        {{/if}}
+        <div class="user-view" style="display: flex; align-items: center;">
+            <div class="background blue">
+
+            </div>
+            <div>
+                <a href="#user">
+                    <div class="circle white z-depth-1">
+                        <i class="mdi mdi-account grey-text" style="font-size: 50px;"></i>
+                    </div>
+                </a>
+                <a href="#name">
+                    <span class="white-text name">{{workShift.user.full_name}}</span>
+                </a>
+                <a href="#email">
+                    <span class="white-text email">{{workShift.user.email}}</span>
+                </a>
+            </div>
+        </div>
+    </li>
+    <li>
+        <a class="waves-effect" href="#applic/list/destroy" style="font-size: 18px">
+            <i class="mdi mdi-view-list"></i>Список заявок
+        </a>
+    </li>
+    <li>
+        <a class="waves-effect" href="#map/destroy" style="font-size: 18px">
+            <i class="mdi mdi-map"></i>Карта
+        </a>
+    </li>
+</ul>
+</div>
+
+<style>
+
+    #MenuComponent{
+        height: 100%;
+        position: absolute;
+        width: 600px;
+    }
+    
+    .sidenav {
+        height: 100vh;
+        position: absolute;
+        z-index: 9999;
+        transition: transform 200ms !important;
+    }
+
+    .circle {
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .user-view {
+        line-height: 0px;
+        height: 220px;
+    }
+
+    .divider {
+        background-color: rgba(255, 255, 255, 0.3);
+    }
+</style>

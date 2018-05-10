@@ -1,0 +1,112 @@
+<div id="ItemsCardsComponent">
+    <button id="close" class="btn-floating white waves-effect waves-light right" on:click="close()" style="position: fixed; top: 15px; right: 15px;">
+        <i class="mdi mdi-close black-text"></i>
+    </button>
+    {{#each items as item, i}}
+    <div id="card{{i}}" class="card-panel" style="padding: 0; white-space: normal;">
+        <div style="position: absolute; height: 100%; width: 100%">
+            <div on:click="notIssued(item.id, i)" class="white red-text waves-effect waves-red" style="position: absolute; bottom: 0; left:0; width: 50%; height: 50px; text-align: center; line-height: 50px; z-index:5; font-size: 20px;">
+                Не выдан</div>
+            <div on:click="issued(item.id, i)" class="white green-text waves-effect waves-green" style="position: absolute; bottom: 0; right:0; width: 50%; height: 50px; text-align: center; line-height: 50px; z-index:5; font-size: 20px;">
+                Выдан</div>
+            <div style="padding: 10px; height: 75px">
+
+                <h6 style="margin: 0;" class="{{typeof(item.issued) == 'undefined' || startState ? '' : 'white-text'}}">{{item.name}}</h6>
+            </div>
+            {{#if typeof(item.issued) == 'undefined' || startState}}
+            <div>
+                <img class="materialboxed" src="img/cargo.png" style="width: 150px; margin-left: 25px;">
+                <div style="width: 50px; border-top: 1px solid grey; transform: rotate(25deg); position: relative; top: -16px; left: 42px; text-align: center;">110см</div>
+                <div style="width: 50px; border-top: 1px solid grey; transform: rotate(-26deg); position: relative; top: -39px; left: 109px; text-align: center;">67см</div>
+                <div style="height: 65px; width: 42px; border-left: 1px solid grey; position: relative; top: -147px; left: 159px; text-align: center; line-height: 100px">67см</div>
+            </div>
+            <div style="position: absolute; bottom: 70px; left: 25px; width: 85%;">
+                <span class="left" style="font-size: 25px; margin-top: 35px; ">
+                    <b>{{item.quantity}}</b>шт
+                </span>
+                <span class="red-text right" style="font-size: 25px; margin-top: 35px; ">
+                    <b>{{item.sum}}</b>₽
+                </span>
+            </div>
+            {{elseif !item.issued}}
+            <div class="center-align" style="padding-top: 30px;">
+                <i class="mdi mdi-close-circle white-text" style="font-size: 58px;"></i>
+                <p class="white-text" style="font-size: 28px; margin: 0; margin-top: -20px;">Не выдан</p>
+            </div>
+            {{elseif item.quantity > 1}}
+            <div class="center-align" style="padding-top: 30px;">
+                <p class="white-text" style="font-size: 28px; margin: 0; margin-top: -20px;">Выданo</p>
+                <div class="text-center" style="width: 70%; margin: 10px auto; line-height: 1;">
+                    <button class="btn-floating waves-effect waves-red white left" on:click="issuedPartQuantityChange(item.id, 'minus')">
+                        <i class="mdi mdi-minus black-text"></i>
+                    </button>
+                    <span class="white-text" style="font-size: 40px">{{item.issuedPartQuantity}}шт</span>
+                    <button class="btn-floating waves-effect waves-green white right" on:click="issuedPartQuantityChange(item.id, 'plus')">
+                        <i class="mdi mdi-plus black-text"></i>
+                    </button>
+                </div>
+                <button class="btn waves-effect waves-teal white black-text" style="margin-top: 25px" on:click="issued(item.id, i)">Подтвердить</button>
+            </div>
+            {{else}}
+            <div class="center-align" style="padding-top: 30px;">
+                <i class="mdi mdi-check-circle white-text" style="font-size: 58px;"></i>
+                <p class="white-text" style="font-size: 28px; margin: 0; margin-top: -20px;">Выдан</p>
+            </div>
+            {{/if}}
+        </div>
+    </div>
+    {{/each}}
+    <div id="card{{items.length}}" class="card-panel" style="padding: 0; white-space: normal;">
+        <div style="position: absolute; height: 100%; width: 100%">
+            <div on:click="issued(null, items.length)" class="green white-text" style="position: absolute; bottom: 0; right:0; width: 100%; height: 50px; text-align: center; line-height: 50px; z-index:5">
+                Утвердить</div>
+            <div id="extra-item-cover-issued" class="green" style="position: absolute; z-index: 2; height: 0px; width: 0; bottom:0; right: 0; border-radius: 1000px 0 0 0; overflow: hidden;">
+
+            </div>
+            <div style="padding: 15px;">
+
+                <h5 style="margin: 0;" class="{{extra.issued ? 'white-text' : ''}}">Данные к заказу</h5>
+            </div>
+            {{#if !extra.issued}}
+            <div class="divider"></div>
+            {{/if}}
+            <div class="row {{extra.issued ? 'white-inputs' : ''}}" style="padding: 15px">
+                <div class="input-field col s12">
+                    <i class="mdi mdi-weight-kilogram prefix"></i>
+                    <input id="icon_prefix" type="number" bind:value="extra.weight">
+                    <label class="active" for="icon_prefix">Общий вес</label>
+                </div>
+                <div class="input-field col s12">
+                    <i class="mdi mdi-message prefix"></i>
+                    <textarea id="icon_prefix2" class="materialize-textarea" bind:value="extra.comment"></textarea>
+                    <label class="active" for="icon_prefix2">Ваш комментарий</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .card-panel {
+        transform: translate3d(0, 100vh, 0);
+        width: 300px;
+        height: 350px;
+        display: inline-block;
+        margin: 5px;
+        transition: transform 200ms;
+    }
+
+    #ItemsCardsComponent {
+        display: inline-block;
+        overflow-y: hidden;
+        overflow-x: scroll;
+        white-space: nowrap;
+        padding-left: calc(50% - 150px);
+        padding-right: calc(50% - 150px);
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh;
+    }
+</style>

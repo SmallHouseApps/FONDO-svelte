@@ -1,0 +1,308 @@
+<div id="ApplicListComponent" on:touchstart="set({ touched: true })" on:touchend="set({ touched: false })">
+    <table id="ApplicListComponentTable">
+        {{#each applics as applic, i}}
+        {{#if (sy - screenHeight/2 <= applic.offsetTop) && (sy + screenHeight*1.5 >= applic.offsetTop) }}
+        <tr id="applic-row-{{applic.id}}" 
+            class="applic-tr {{applic.orderStart ? 'order-start' : ''}} white">
+            <td class=" left-col waves-effect {{applic.type == 1 ? 'waves-delivery' : 'waves-takeout'}}" on:click="showItemCards(applic.id, event)" style="{{applic.done ? 'opacity: 0.5;' : 'opacity: 1;' }}">
+                {{#if applic.canceled}}
+                <span class="mdi mdi-cancel {{applic.type == 1 ? 'dl' : 'tk'}} status grey white-text"></span>
+                {{elseif applic.denial}}
+                <span class="mdi mdi-close {{applic.type == 1 ? 'dl' : 'tk'}} status red white-text"></span>
+                {{elseif applic.done}}
+                <span class="mdi mdi-check {{applic.type == 1 ? 'dl' : 'tk'}} status green white-text"></span>
+                {{/if}}
+
+                {{#if applic.type == 1}}
+                    <div class="pay">
+                        {{#if applic.order.pay_type == 'cashpay'}}
+                        <i class="mdi mdi-cash"></i>
+                        {{elseif applic.order.pay_type == 'cardpay'}}
+                        <i class="mdi mdi-credit-card"></i>
+                        {{elseif applic.order.pay_type == 'prepay'}}
+                        <i class="mdi mdi-credit-card-off"></i>
+                        {{/if}}
+                    </div>
+                    
+                    {{#if !applic.done && !applic.denial && !applic.canceled}}
+                        {{#if applic.items.length == 0}}
+                        <div style="line-height: 11px;">
+                            <label class="int red-text text-darken-2">Ожидается выполнение забора</label>
+                        </div>
+                        {{else}}
+                        <div class="price">
+                            <div style="width: 100%">
+                                <span class="int">{{applic.int}}{{applic.decimal > 0 ? ',' : '₽'}}</span>
+                                {{#if applic.decimal > 0}}
+                                    <span class="decimal">{{applic.decimal}}₽</span>
+                                {{/if}}
+                            </div>
+                            {{#if applic.order.pay_type == 'cashpay'}}
+                            <label>Наличными</label>
+                            {{elseif applic.order.pay_type == 'cardpay'}}
+                            <label>Картой</label>
+                            {{elseif applic.order.pay_type == 'prepay'}}
+                            <label>Предоплата</label>
+                            {{/if}}
+                        </div>
+                        {{/if}}
+                    {{elseif applic.denial}}
+                    <div class="takeout-text">
+                        <span class="int red-text">Завершен</span>
+                    </div>
+                    {{elseif applic.canceled}}
+                    <div class="takeout-text">
+                        <span class="int grey-text">Завершен</span>
+                    </div>
+                    {{elseif applic.done}}
+                    <div class="takeout-text">
+                        <span class="int green-text">Завершен</span>
+                    </div>
+                    {{/if}}
+                {{else}}
+                    <div class=" red-text tex-lighten-2">
+                        <div class="items">
+                            <i class="mdi mdi-dropbox"></i>
+                        </div>
+                    </div>
+                    {{#if !applic.done && !applic.denial && !applic.canceled}}
+                    <span class="int">Забрать</span>
+                    <div class="takeout-text">
+                        <span class="int">{{applic.items.length}}</span><span class="decimal">шт</span>
+                        <label>~{{applic.weight}}кг</label>
+                    </div>
+
+                    
+                    {{elseif applic.denial}}
+                    <div class="takeout-text">
+                        <span class="int red-text">Завершен</span>
+                    </div>
+                    {{elseif applic.canceled}}
+                    <div class="takeout-text">
+                        <span class="int grey-text">Завершен</span>
+                    </div>
+                    {{elseif applic.done}}
+                    <div class="takeout-text">
+                        <span class="int green-text">Завершен</span>
+                    </div>
+                    {{/if}}
+                {{/if}}
+            </td>
+            <td class="waves-effect waves-light" style="{{applic.done ? 'opacity: 0.5;' : 'opacity: 1;' }} padding-left: 10px;" on:click="showApplic(applic.id)">
+                <div class="info-block">
+                    <i class="mdi mdi-home grey-text text-darken-1"></i>
+                    <div class="content">
+                        <span>{{applic.address}}</span>
+                    </div>
+                </div>
+                
+                <div class="info-block">
+                    <i class="mdi mdi-clock grey-text text-darken-1"></i>
+                    <div class="content">
+                        <span> <label>{{applic.date}}</label> с {{applic.time_start}} до {{applic.time_end}}</span>
+                    </div>
+                </div>
+                
+                <div class="info-block">
+                    <i class="mdi mdi-account grey-text text-darken-1"></i>
+                    <div class="content">
+                        <span>{{applic.name}}</span>
+                    </div>
+                </div>
+
+                <div class="info-block">
+                    <i class="mdi mdi-phone grey-text text-darken-1"></i>
+                    <div class="content">
+                        <span>{{applic.phone}}</span>
+                    </div>
+                </div>
+            </td>
+            
+            <td class="top" style="width: 10%;">
+                <div class="info-block" style="line-height: 12px">
+                    <label>Номера</label>
+                    <label>{{applic.id}}</label>
+                    <label>{{applic.applications_name}}</label>
+                </div>
+                <a href="#modal/comments" class="btn-flat blue-text waves-effect waves-blue" on:click="showMessages(applic.id, 'files')">
+                    <i class="mdi mdi-paperclip"></i>
+                    {{#if applic.order.files.length > 0}}
+                    <div class="badge red lighten-2 white-text">{{applic.order.files.length}}</div>
+                    {{/if}}
+                </a>
+                <a href="#modal/comments" class="btn-flat blue-text waves-effect waves-blue" on:click="showMessages(applic.id, 'comments')">
+                    <i class="mdi mdi-message"></i>
+                    {{#if applic.comments.length > 0}}
+                    <div class="badge red lighten-2 white-text">{{applic.comments.length}}</div>
+                    {{/if}}
+                </a>
+                <button id='dropdown{{applic.id}}-trigger' on:touchstart="initDropdown(this, applic.id)" class="dropdown-trigger btn-flat blue-text" data-target='dropdown{{applic.id}}'>
+                    <i class="mdi mdi-dots-horizontal" style="height: 15px; line-height: 15px;"></i>
+                </button>
+                {{#if applic.dropdown }}
+                <ul id='dropdown{{applic.id}}' class='dropdown-content'>
+                    <li>
+                        <a on:click="showItemCards(applic.id, event)" class="green-text">
+                            <i class="mdi mdi-check"></i>Выполнить
+                        </a>
+                    </li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li>
+                        <a href="#!" class="red-text darken-2">
+                            <i class="mdi mdi-map-marker"></i>Отказ на месте
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#!" class="red-text darken-2">
+                            <i class="mdi mdi-phone-hangup"></i>Отказ по телефону
+                        </a>
+                    </li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li>
+                        <a href="geo:{{applic.geo_cord[0]}},{{applic.geo_cord[1]}}" class="blue-text darken-2">
+                            <i class="mdi mdi-navigation"></i>Построить маршрут
+                        </a>
+                    </li>
+                    <li>
+                        <a href="tel:8{{applic.phone}}" class="blue-text darken-2">
+                            <i class="mdi mdi-phone"></i>Позвонить
+                        </a>
+                    </li>
+                    <li>
+                        <a on:click="showApplic(applic.id)" class="blue-text darken-2">
+                            <i class="mdi mdi-eye"></i>Детализация
+                        </a>
+                    </li>
+                    <li class="divider" tabindex="-1"></li>
+                    <li>
+                        <a class="grey-text text-darken-2">
+                            <i class="mdi mdi-close"></i>Закрыть
+                        </a>
+                    </li>
+                </ul>
+                {{/if}}
+            </td>
+        </tr>
+        {{else}}
+        <tr style="height: 155px;">
+
+        </tr>
+        {{/if}}
+        {{/each}}
+    </table>
+</div>
+
+<style>
+    .info-block i{
+        position: absolute;
+        font-size: 16px;
+    }
+    .info-block .content{
+        margin-left: 20px !important;
+        padding-top: 2.4px !important;
+    }
+    .order-start{
+        border-top: 15px solid rgb(240, 240, 240);
+    }
+
+    .pay label{
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        text-align: center;
+    }
+
+    .items i{
+        margin-top: -10px;
+        margin-bottom: -10px;
+    }
+
+    .top{
+        padding: 5px; 
+        vertical-align: top; 
+        text-align: center; 
+    }
+    
+    .items{
+        border-radius: 100% !important;
+        width: 50px !important;
+        height: 50px !important;
+        color: white !important;
+        background-color: darkgreen;
+        margin: 10px !important;
+        font-size: 33px;
+    }
+
+    .pay, .pay-done{
+        border-radius: 100% !important;
+        width: 50px !important;
+        height: 50px !important;
+        color: white !important;
+        background-color: darkorange;
+        margin: 10px !important;
+        font-size: 33px;
+    }
+
+    .price label{
+        position: relative;
+        top:-8px;
+    }
+
+    .price .int{
+        font-weight: 400;
+        font-size: 13px;
+    }
+    .price .decimal{
+        color: rgb(192, 192, 192);
+        font-size: 12px;
+    }
+    .takeout-text .int{
+        font-weight: 400;
+        font-size: 13px;
+    }
+    .takeout-text .decimal{
+        color: rgb(192, 192, 192);
+        font-size: 12px;
+    }
+    .status.tk{
+        position: absolute;
+        top: 50%;
+        right: 13px;
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+    }
+    .status.dl{
+        position: absolute;
+        top: 50%;
+        right: 13px;
+        width: 20px;
+        height: 20px;
+        border-radius: 100%;
+    }
+    .date{
+        position: absolute;
+        bottom: 5px;
+        left: 0;
+        text-align: right;
+        width: 100%;
+    }
+    a .badge{
+        position: absolute;
+        top:0;
+        right: 7px;
+        width: 15px;
+        height: 15px;  
+        border-radius: 100%;
+        line-height: 15px;
+        font-size: 10px;
+    }
+
+    .left-col {
+        text-align: center; 
+        width: 80px !important; 
+        border-bottom: 1px solid white;
+    }
+</style>
+

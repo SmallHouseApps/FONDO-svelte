@@ -1,0 +1,69 @@
+<div id="FilterModalComponent">
+    <div class="row">
+        <div class="input-field col s6">
+            <input bind:value="dateStart" type="date" class="validate">
+            <label>С</label>
+        </div>
+        <div class="input-field col s6">
+            <input bind:value="dateEnd" type="date" class="validate">
+            <label>ПО</label>
+        </div>
+        <div class="col s12">
+            <button class="btn green right waves-effect waves-light" on:click="close()">Применить</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    export default {
+        oncreate(){
+            M.FormSelect.init(document.querySelectorAll('select'));
+        },
+
+        computed: {
+			dateStart: dateStart => {
+                var date = dateStart;
+                
+                if(dateStart.split('.').length > 1){
+                    var day = dateStart.split('.')[0];
+                    if(day.toString().length == 1) day = '0'+day;
+
+                    var month = dateStart.split('.')[1];
+                    if(month.toString().length == 1) month = '0'+month;
+
+                    var year = dateStart.split('.')[2];
+                    date = year+'-'+month+'-'+day;
+                } 
+
+                
+                return date;
+            },
+            dateEnd: dateEnd => {
+                var date = dateEnd;
+
+                if(dateEnd.split('.').length > 1){
+                    var day = dateEnd.split('.')[0];
+                    if(day.toString().length == 1) day = '0'+day;
+
+                    var month = dateEnd.split('.')[1];
+                    if(month.toString().length == 1) month = '0'+month;
+
+                    var year = dateEnd.split('.')[2];
+                    date = year+'-'+month+'-'+day;
+                } 
+
+                return date;
+            }
+		}
+    }
+</script>
+
+<style>
+    #FilterModalComponent{
+        padding-top: 10px;
+        padding-bottom: 15px;
+        background-color: white;
+        transform: translate3d(0, -100%, 0);
+        transition: transform 200ms;
+    }
+</style>

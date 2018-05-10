@@ -1,0 +1,1 @@
+{"plugins":["cordova-plugin-whitelist","cordova-plugin-file-transfer","cordova-plugin-file","cordova-plugin-android-permissions","cordova-plugin-file-opener2","cordova-plugin-browsersync","cordova-plugin-googlemaps","cordova-plugin-dialogs","cordova-plugin-vibration"]}

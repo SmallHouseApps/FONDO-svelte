@@ -1,0 +1,11 @@
+{
+  "background_color": "#FFF",
+  "display": "standalone",
+  "name": "FONDO",
+  "short_name": "FONDO",
+  "version": "ru.fondo.app",
+  "description": "FONDO mobile",
+  "author": "Крюков Михаил",
+  "icons": [],
+  "start_url": "index.html"
+}

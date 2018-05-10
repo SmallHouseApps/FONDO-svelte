@@ -1,0 +1,398 @@
+<div id="ApplicModalComponent">
+	<!-- <div class="row">
+		<div class="info-block col s4 center-align">
+			<p>29.65 К</p>
+			<span>Сумма заказа</span>
+		</div>
+		<div class="info-block col s4 center-align">
+			<p>12</p>
+			<span>Товаров</span>
+		</div>
+		<div class="info-block col s4 center-align">
+			<p>3</p>
+			<span>Доп.услуги</span>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+	<div class="row">
+		<h5>Оплата</h5>
+		<div class="info-block col s6">
+			<p>Тип оплаты</p>
+			<span>Предоплата</span>
+		</div>
+		<div class="info-block col s6">
+			<p>Тип предоплаты</p>
+			<span>Полная</span>
+		</div>
+		<div class="info-block col s6">
+			<p>Способ доплаты</p>
+			<span>Нет</span>
+		</div>
+		<div class="info-block col s6">
+			<p>Сумма доплаты</p>
+			<span>0.00</span>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+	<div class="row">
+		<h5>Вес</h5>
+		<div class="info-block col s6">
+			<p>Заказчика</p>
+			<span>3 - 5 кг</span>
+		</div>
+		<div class="info-block col s6">
+			<p>Фактический</p>
+			<span>2.00 кг</span>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+	<div class="row">
+		<h5>Контактные данные</h5>
+		<div class="info-block col s6">
+			<p>Контрагент</p>
+			<span>ИП Бекренева О. В.</span>
+		</div>
+		<div class="info-block col s6">
+			<p>Клиент</p>
+			<span>Пургина Юлия</span>
+		</div>
+		<div class="info-block col s6">
+			<p>Телефон</p>
+			<span>8 (925) 800-75-19</span>
+		</div>
+	</div>
+
+	<div class="divider"></div>
+	<div class="row">
+		<h5>Когда и где</h5>
+		<div class="info-block col s6">
+			<p>Дата</p>
+			<span>24.04.2018</span>
+		</div>
+		<div class="info-block col s6">
+			<p>Время</p>
+			<span>с 00:00 до 18:00</span>
+		</div>
+		<div class="info-block col s12">
+			<p>Адрес</p>
+			<span>Москва, ул.Складочная 1 стр. 1</span>
+		</div>
+	</div> -->
+	<div class="{{type == 1 ? 'delivery' : 'takeout'}}"></div>
+	{{#if isLoad}}
+	<div class="scroll-content" on:scroll="insetHeader(this)">
+		{{#if !infoSettings}}
+		<div class="info card">
+			<h5>Информация по заказу</h5>
+			<i class="mdi mdi-settings" on:click="showSettings()"></i>
+			{{#each infoOptions as option, i}}
+			<div style="position: relative;">
+				<span class="dots">
+					<b class="left" style="margin-top: 0 !important;">{{option.label}}</b>
+					<span class="right option-data" style="margin-top: 0 !important;">{{option.data ? option.data : 'Нет данных'}}</span>
+				</span>
+			</div>
+			<br>
+			{{/each}}
+		</div>
+		{{else}}
+		<div class="card" style="padding-bottom: 66px;">
+			<ul id="demo1" class="slippylist">
+				<label class="intro">↓ удерживайте для смены последовательности</label>
+				{{#each infoOptions as option, i}}
+				<li index="{{i}}">
+					<div class="content">
+						<i class="mdi mdi-menu"></i> {{option.label}}
+						<div class="switch right">
+							<label>
+								Предпросмотр
+							<input type="checkbox" checked="{{option.preview}}">
+							<span class="lever"></span>
+							</label>
+						</div>
+					</div>
+				</li>
+				{{/each}}
+			</ul>
+			<button class="btn-floating btn-large green waves-effect waves-light right" on:click="saveInfoOptions()">
+				<i class="mdi mdi-check"></i>
+			</button>
+		</div>
+		{{/if}}
+
+		<div class="card">
+			<span class="card-title" on:click="showContent(this)">
+				<i class="mdi mdi-comment-multiple"></i> 
+				Комментарии {{comments.length}} 
+				<i class="mdi mdi-chevron-down right"></i> 
+			</span>
+
+			<div class="content-to-show">
+				<div class="hiden-content">
+					{{#each comments as comment}}
+					<div class="comment">
+						{{#if commentsIsLoad}}
+							<label style="position: absolute; top: 5px; left: 10px;">{{comment.user.full_name}}</label>
+							<span>{{{comment.comment ? comment.comment : 'Оставил пустой комментарий'}}}</span>
+							<label style="position: absolute; bottom: 5px; right: 10px;">{{comment.created_at}}</label>
+						{{/if}}
+					</div>
+					{{/each}}
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+			<span class="card-title" on:click="showContent(this)">
+				<i class="mdi mdi-arrow-down-bold-box"></i> 
+				Товары {{items.length}} 
+				<i class="mdi mdi-chevron-down right"></i> 
+			</span>
+
+			<div class="content-to-show">
+				<div class="hiden-content">
+					<table>
+						<thead>
+							<tr>
+								<th>Название</th>
+								<th>Цена</th>
+								<th>Кол-во</th>
+								<th>Общая стоимость</th>
+							</tr>
+						</thead>
+						<tbody>
+							{{#each items as item}}
+							<tr>
+								<td>{{item.name}}</td>
+								<td>{{item.price}}</td>
+								<td>{{item.quantity}}</td>
+								<td><b>{{item.sum}}</b></td>
+							</tr>
+							{{/each}}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<div class="card">
+				<span class="card-title" on:click="showContent(this)">
+					<i class="mdi mdi-file"></i> 
+					Файлы {{files.length}}
+					<i class="mdi mdi-chevron-down right"></i> 
+				</span>
+			<div class="content-to-show">
+				<div class="hiden-content">
+					<div class="horizontal-scroll">
+						{{#each files as file}}
+						<div class="file">
+							<i class="mdi mdi-file-excel" style="position: relative; font-size: 90px"></i>
+							<p style="font-size: 22px">{{file.file.original_name}}</p>
+						</div>
+						{{/each}}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{{/if}}
+</div>
+
+<style>
+	#ApplicModalComponent {
+		color: #515151;
+		background-color: #f0f0f0;
+		width: 100vw;
+		height: calc(100vh - 56px);
+		transform: translate3d(0, 100vh, 0);
+		transition: transform 200ms;
+	}
+
+	.scroll-content {
+		-webkit-overflow-scrolling: touch;
+		overflow-y: auto;
+		overflow-x: hidden;
+		position: absolute;
+		width: 100%;
+		height: 100%;
+	}
+
+	.applic-header {
+		background-color: darkorange;
+		width: 100%;
+		padding: 15px;
+		padding-top: 0;
+	}
+
+	.applic-header p {
+		font-size: 20px;
+		margin: 0;
+		margin-bottom: 5px;
+	}
+
+	.comment{
+		margin-top: 15px;
+		padding: 25px;
+		position: relative;
+		background-color: #f6f6f6;
+		position: relative;
+		border-radius: 15px;
+	}
+
+	.content-to-show{
+		height: 0;
+		transition: height 200ms;
+		overflow: hidden;
+	}
+
+	.file {
+		position: relative;
+		max-width: 90px;
+		display: inline-block;
+	}
+
+	.file p {
+		margin: 0;
+		margin-top: -26px;
+		text-align: center;
+	}
+
+	.mdi-chevron-down {
+		transition: transform 200ms;
+	}
+	/* .info-block{
+		padding-bottom: 15px;
+	}
+
+	.info-block p{
+		margin: 0;
+		font-size: 18px;
+		font-weight: 500;
+		color: darkorange;
+	}
+	.row{
+		padding: 15px;
+		padding-bottom: 0;
+	}
+
+	h5{
+		color: gray;
+		margin-top: 0;
+		margin-bottom: 15px;
+	}
+	
+	h5 i{
+		margin-right: 5px;
+	} */
+
+	.delivery, .takeout {
+		position:absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 80px;
+	}
+
+	b {
+		font-weight: 400 !important;
+	}
+
+	.card {
+		margin: 10px;
+		padding: 15px;
+		transform: translate3d(0, 100vh, 0);
+		transition: transform 200ms;
+	}
+
+	.info {
+		padding-top: 60px;
+	}
+
+	.info i {
+		position: absolute;
+		font-size: 20px;
+		top: 10px;
+		right: 10px;
+	}
+
+	.info h5 {
+		margin: 0;
+		position: absolute;
+		top: 10px;
+		left: 10px;
+	}
+
+	.dots span {
+		position: relative;
+		max-width: 44vw;
+		margin-top: -15px !important;
+	}
+
+	.dots b {
+		color: grey;
+		margin-top: -15px !important;
+	}
+
+	.dots:after {
+		content: '_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _';
+		color: #d8d8d8;
+		display: block;
+		white-space: nowrap;
+		overflow: hidden;
+		margin-top: -36px !important;
+	}
+
+	ul:focus {
+		user-select: none !important;
+	}
+
+	ul li:focus {
+		user-select: none !important;
+	}
+
+	ul .intro {
+		margin-left: 17px;
+		position: absolute;
+		z-index: 9;
+		top: 20px;
+	}
+
+	ul{
+		background-color: white;
+		margin-top: 25px;
+	}
+
+	ul li{
+		transition: box-shadow 50ms;
+		user-select: none;
+		position: relative;
+	}
+
+	ul li .content{
+		background-color: white;
+		padding-top: 5px;
+		padding-bottom: 5px;
+		font-size: 16px;
+	}
+
+	ul li .content i{
+		margin-right: 15px;
+		margin-left: 10px;
+	}
+
+	.slip-reordering {
+		box-shadow: 0 24px 38px 3px rgba(0,0,0,0.14), 0 9px 46px 8px rgba(0,0,0,0.12), 0 11px 15px -7px rgba(0,0,0,0.2);
+	}
+
+	tr:last-child {
+		border-bottom: none;
+	}
+	
+	tr{
+		height: 50px !important;
+	}
+
+</style>
